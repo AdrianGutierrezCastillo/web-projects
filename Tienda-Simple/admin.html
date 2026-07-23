@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tienda Simple - Administracion</title>
+  <link rel="stylesheet" href="css/estilos.css" />
+</head>
+<body>
+  <header class="encabezado">
+    <div class="contenedor barra-encabezado">
+      <a href="admin.html" class="logo">Tienda Simple - Admin</a>
+      <div class="acciones-encabezado">
+        <span class="usuario-actual" id="nombreUsuario"></span>
+        <button class="boton boton-secundario" id="botonCerrarSesion">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <div class="pestanas-admin">
+      <button class="pestana-admin activa" id="pestanaProductos">Productos</button>
+      <button class="pestana-admin" id="pestanaUsuarios">Usuarios</button>
+    </div>
+
+    <section id="seccionProductos">
+      <div class="barra-herramientas">
+        <h1 class="titulo-seccion">Productos</h1>
+        <div class="controles-filtro">
+          <input type="text" id="buscadorProductos" placeholder="Buscar producto" />
+          <button class="boton boton-primario" id="botonNuevoProducto">Nuevo producto</button>
+        </div>
+      </div>
+
+      <div class="tarjeta">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Nombre</th>
+              <th>Categoria</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTablaProductos"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="seccionUsuarios" class="oculto">
+      <div class="barra-herramientas">
+        <h1 class="titulo-seccion">Usuarios registrados</h1>
+      </div>
+
+      <div class="tarjeta">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTablaUsuarios"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="fondo-modal oculto" id="fondoModal">
+    <div class="tarjeta modal">
+      <div class="encabezado-modal">
+        <h2 id="tituloModal">Nuevo producto</h2>
+        <button class="cerrar-panel" id="botonCerrarModal">&times;</button>
+      </div>
+      <form id="formularioProducto">
+        <input type="hidden" id="productoId" />
+        <div class="campo">
+          <label for="productoNombre">Nombre</label>
+          <input type="text" id="productoNombre" required />
+        </div>
+        <div class="campo">
+          <label for="productoDescripcion">Descripcion</label>
+          <textarea id="productoDescripcion" required></textarea>
+        </div>
+        <div class="fila-dos-columnas">
+          <div class="campo">
+            <label for="productoCategoria">Categoria</label>
+            <input type="text" id="productoCategoria" required />
+          </div>
+          <div class="campo">
+            <label for="productoPrecio">Precio</label>
+            <input type="number" id="productoPrecio" min="0" step="0.01" required />
+          </div>
+        </div>
+        <div class="campo">
+          <label for="productoStock">Stock</label>
+          <input type="number" id="productoStock" min="0" step="1" required />
+        </div>
+        <div class="pie-modal">
+          <button type="button" class="boton boton-secundario" id="botonCancelarModal">Cancelar</button>
+          <button type="submit" class="boton boton-primario">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/almacenamiento.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
