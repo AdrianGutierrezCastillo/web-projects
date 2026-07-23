@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LUXE SHOP</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles2.css"/>
+</head>
+<body>
+
+<!-- ══════════════════════════ AUTH SCREEN ══════════════════════════ -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-bg">
+    <div class="auth-orb auth-orb1"></div>
+    <div class="auth-orb auth-orb2"></div>
+    <div class="auth-grid"></div>
+  </div>
+  <div class="auth-container">
+    <div class="auth-brand">
+      <span class="auth-logo">LUXE<em>SHOP</em></span>
+      <p>Moda de alto nivel al alcance de tu mano</p>
+    </div>
+    <div class="auth-card" id="authCard">
+      <!-- TABS -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar Sesión</button>
+        <button class="auth-tab" data-tab="register">Registrarse</button>
+      </div>
+
+      <!-- LOGIN -->
+      <form class="auth-form" id="loginForm">
+        <div class="form-field">
+          <label>Correo electrónico</label>
+          <input type="email" id="loginEmail" placeholder="tu@email.com" required/>
+        </div>
+        <div class="form-field">
+          <label>Contraseña</label>
+          <div class="input-eye">
+            <input type="password" id="loginPass" placeholder="••••••••" required/>
+            <button type="button" class="eye-btn" onclick="togglePass('loginPass',this)">👁</button>
+          </div>
+        </div>
+        <div class="auth-row">
+          <label class="checkbox-label"><input type="checkbox"/> Recordarme</label>
+          <a href="#" class="auth-link">¿Olvidaste tu contraseña?</a>
+        </div>
+        <button type="submit" class="auth-btn">Entrar</button>
+        <div class="auth-divider"><span>o continúa con</span></div>
+        <div class="social-btns">
+          <button type="button" class="social-btn">G Google</button>
+          <button type="button" class="social-btn">f Facebook</button>
+        </div>
+        <p class="demo-hint">
+          Demo: <strong>admin@luxeshop.com</strong> / admin123<br>
+          Cliente: <strong>cliente@email.com</strong> / cliente123
+        </p>
+      </form>
+
+      <!-- REGISTER -->
+      <form class="auth-form hidden" id="registerForm">
+        <div class="form-row2">
+          <div class="form-field"><label>Nombre</label><input type="text" placeholder="Juan" required/></div>
+          <div class="form-field"><label>Apellido</label><input type="text" placeholder="Pérez" required/></div>
+        </div>
+        <div class="form-field">
+          <label>Correo electrónico</label>
+          <input type="email" id="regEmail" placeholder="tu@email.com" required/>
+        </div>
+        <div class="form-field">
+          <label>Contraseña</label>
+          <div class="input-eye">
+            <input type="password" id="regPass" placeholder="Mínimo 8 caracteres" required/>
+            <button type="button" class="eye-btn" onclick="togglePass('regPass',this)">👁</button>
+          </div>
+          <div class="password-strength" id="passStrength"></div>
+        </div>
+        <div class="form-field">
+          <label>Confirmar contraseña</label>
+          <input type="password" id="regPass2" placeholder="Repite tu contraseña" required/>
+        </div>
+        <label class="checkbox-label">
+          <input type="checkbox" required/>
+          Acepto los <a href="#" class="auth-link">Términos y Condiciones</a>
+        </label>
+        <button type="submit" class="auth-btn">Crear Cuenta</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ MAIN APP ══════════════════════════ -->
+<div id="appScreen" class="app-screen hidden">
+
+  <!-- ── HEADER ── -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-inner">
+      <button class="hamburger" id="hamburger">&#9776;</button>
+      <a href="#" class="site-logo" onclick="showPage('shop')">LUXE<em>SHOP</em></a>
+
+      <nav class="main-nav" id="mainNav">
+        <a href="#" onclick="showPage('shop')" class="nav-link active">Tienda</a>
+        <a href="#" onclick="showPage('shop')" class="nav-link">Novedades</a>
+        <a href="#" onclick="showPage('shop')" class="nav-link">Ofertas</a>
+        <a href="#" onclick="showPage('shop')" class="nav-link">Marcas</a>
+      </nav>
+
+      <div class="topbar-right">
+        <button class="tb-btn" id="searchToggle" title="Buscar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+        </button>
+        <button class="tb-btn" title="Favoritos" onclick="showPage('wishlist')">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          <span class="tb-badge" id="wishBadge">0</span>
+        </button>
+        <button class="tb-btn cart-tb" id="cartToggle" title="Carrito">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span class="tb-badge cart-badge" id="cartBadge">0</span>
+        </button>
+        <div class="user-menu">
+          <button class="user-avatar-btn" id="userMenuBtn">
+            <span id="userInitials">U</span>
+            <svg viewBox="0 0 24 24" class="chevron"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="user-dropdown" id="userDropdown">
+            <div class="ud-header">
+              <strong id="udName">Usuario</strong>
+              <small id="udEmail">email@...</small>
+              <span class="ud-role" id="udRole">cliente</span>
+            </div>
+            <hr/>
+            <a href="#" onclick="showPage('profile')">Mi Perfil</a>
+            <a href="#" onclick="showPage('orders')">Mis Pedidos</a>
+            <a href="#" onclick="showPage('wishlist')">Favoritos</a>
+            <a href="#" id="adminLink" class="admin-link hidden" onclick="showPage('admin')">Panel Admin ⚡</a>
+            <hr/>
+            <a href="#" onclick="logout()" class="logout-link">Cerrar Sesión</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Search bar -->
+    <div class="searchbar-drop" id="searchbarDrop">
+      <input type="text" id="searchInput" placeholder="¿Qué estás buscando?" autocomplete="off"/>
+      <button id="searchClose">✕</button>
+    </div>
+  </header>
+
+  <!-- ── PAGES ── -->
+  <div class="pages-wrap">
+
+    <!-- ══ PAGE: SHOP ══ -->
+    <div class="page" id="pageShop">
+      <!-- Hero Banner -->
+      <section class="hero">
+        <div class="hero-slides" id="heroSlides">
+          <div class="hero-slide active" style="background:linear-gradient(135deg,#0f0c29,#302b63,#24243e)">
+            <div class="hero-content">
+              <span class="hero-tag">Nueva Colección 2025</span>
+              <h1>Estilo que <em>Trasciende</em></h1>
+              <p>Descubre prendas diseñadas para quienes no siguen tendencias, las crean.</p>
+              <div class="hero-actions">
+                <button class="btn-hero-main" onclick="filterCat('ropa')">Explorar Colección</button>
+                <button class="btn-hero-ghost">Ver Lookbook</button>
+              </div>
+            </div>
+            <div class="hero-visual">
+              <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80" alt="Hero"/>
+              <div class="hero-float-card">
+                <span>Envío gratis</span>
+                <strong>desde $150</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-dots">
+          <span class="hdot active"></span><span class="hdot"></span><span class="hdot"></span>
+        </div>
+      </section>
+
+      <!-- Categories strip -->
+      <section class="cat-strip">
+        <button class="cat-chip active" data-cat="all">🛍 Todo</button>
+        <button class="cat-chip" data-cat="ropa">👗 Ropa</button>
+        <button class="cat-chip" data-cat="accesorios">👜 Accesorios</button>
+        <button class="cat-chip" data-cat="calzado">👠 Calzado</button>
+        <button class="cat-chip" data-cat="belleza">💄 Belleza</button>
+      </section>
+
+      <!-- Toolbar -->
+      <div class="shop-toolbar">
+        <span class="results-label" id="resultsLabel">12 productos</span>
+        <div class="toolbar-right">
+          <select id="sortSel" class="sort-select">
+            <option value="default">Ordenar por</option>
+            <option value="price-asc">Precio ↑</option>
+            <option value="price-desc">Precio ↓</option>
+            <option value="name">Nombre A-Z</option>
+            <option value="rating">Mejor valorados</option>
+          </select>
+          <div class="view-toggle">
+            <button class="vt active" data-view="grid" title="Cuadrícula">▦</button>
+            <button class="vt" data-view="list" title="Lista">☰</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products grid -->
+      <div class="products-wrap" id="productsWrap">
+        <div class="products-grid" id="productsGrid"></div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: WISHLIST ══ -->
+    <div class="page hidden" id="pageWishlist">
+      <div class="inner-page">
+        <h2 class="page-title">Mis Favoritos</h2>
+        <div class="products-grid" id="wishGrid"></div>
+        <div class="empty-state hidden" id="wishEmpty">
+          <div class="es-icon">♡</div>
+          <h3>Sin favoritos aún</h3>
+          <p>Guarda los productos que más te gustan</p>
+          <button class="btn-primary" onclick="showPage('shop')">Explorar tienda</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: PROFILE ══ -->
+    <div class="page hidden" id="pageProfile">
+      <div class="inner-page">
+        <h2 class="page-title">Mi Perfil</h2>
+        <div class="profile-layout">
+          <div class="profile-card">
+            <div class="profile-avatar" id="profileAvatar">U</div>
+            <h3 id="profileName">Usuario</h3>
+            <p id="profileEmail">email@...</p>
+            <span class="profile-badge" id="profileRole">cliente</span>
+          </div>
+          <div class="profile-form">
+            <h4>Información Personal</h4>
+            <div class="form-row2">
+              <div class="form-field"><label>Nombre</label><input type="text" id="pfNombre"/></div>
+              <div class="form-field"><label>Apellido</label><input type="text" id="pfApellido"/></div>
+            </div>
+            <div class="form-field"><label>Email</label><input type="email" id="pfEmail"/></div>
+            <div class="form-field"><label>Teléfono</label><input type="tel" id="pfTel" placeholder="+591 ..."/></div>
+            <button class="btn-primary" onclick="saveProfile()">Guardar Cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: ORDERS ══ -->
+    <div class="page hidden" id="pageOrders">
+      <div class="inner-page">
+        <h2 class="page-title">Mis Pedidos</h2>
+        <div id="ordersList"></div>
+        <div class="empty-state hidden" id="ordersEmpty">
+          <div class="es-icon">📦</div>
+          <h3>Sin pedidos aún</h3>
+          <button class="btn-primary" onclick="showPage('shop')">Ir a la tienda</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: ADMIN ══ -->
+    <div class="page hidden" id="pageAdmin">
+      <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+          <div class="admin-brand">⚡ Admin</div>
+          <nav class="admin-nav">
+            <button class="admin-nav-btn active" data-panel="dashboard">📊 Dashboard</button>
+            <button class="admin-nav-btn" data-panel="products">📦 Productos</button>
+            <button class="admin-nav-btn" data-panel="orders">🛒 Pedidos</button>
+            <button class="admin-nav-btn" data-panel="customers">👥 Clientes</button>
+            <button class="admin-nav-btn" data-panel="coupons">🏷 Cupones</button>
+            <button class="admin-nav-btn" data-panel="categories">🗂 Categorías</button>
+            <button class="admin-nav-btn" data-panel="settings">⚙️ Configuración</button>
+          </nav>
+        </aside>
+
+        <!-- Admin main -->
+        <main class="admin-main">
+
+          <!-- DASHBOARD -->
+          <div class="admin-panel active" id="panel-dashboard">
+            <div class="admin-panel-header">
+              <h2>Dashboard</h2>
+              <span class="admin-date" id="adminDate"></span>
+            </div>
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-icon kpi-blue">💰</div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Ventas del mes</span>
+                  <span class="kpi-val" id="kpiVentas">$0</span>
+                  <span class="kpi-delta positive">+12.5%</span>
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon kpi-green">🛒</div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Pedidos hoy</span>
+                  <span class="kpi-val" id="kpiPedidos">0</span>
+                  <span class="kpi-delta positive">+3</span>
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon kpi-orange">👥</div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Clientes</span>
+                  <span class="kpi-val" id="kpiClientes">0</span>
+                  <span class="kpi-delta positive">+8</span>
+                </div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon kpi-red">⚠</div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Bajo stock</span>
+                  <span class="kpi-val" id="kpiBajoStock">0</span>
+                  <span class="kpi-delta negative">Revisar</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="dash-grid2">
+              <div class="dash-card">
+                <h4>Últimos Pedidos</h4>
+                <table class="admin-table mini">
+                  <thead><tr><th>Orden</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead>
+                  <tbody id="recentOrders"></tbody>
+                </table>
+              </div>
+              <div class="dash-card">
+                <h4>Productos con Bajo Stock</h4>
+                <div id="lowStockList"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRODUCTS -->
+          <div class="admin-panel" id="panel-products">
+            <div class="admin-panel-header">
+              <h2>Gestión de Productos</h2>
+              <button class="btn-admin-add" onclick="openProductModal()">+ Nuevo Producto</button>
+            </div>
+            <div class="admin-toolbar">
+              <input type="text" id="adminSearchProd" placeholder="Buscar producto..." class="admin-search"/>
+              <select id="adminCatFilter" class="admin-select">
+                <option value="">Todas las categorías</option>
+                <option value="ropa">Ropa</option>
+                <option value="accesorios">Accesorios</option>
+                <option value="calzado">Calzado</option>
+                <option value="belleza">Belleza</option>
+              </select>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table" id="productsTable">
+                <thead>
+                  <tr>
+                    <th>Imagen</th><th>Nombre</th><th>SKU</th><th>Categoría</th>
+                    <th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="productsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ORDERS -->
+          <div class="admin-panel" id="panel-orders">
+            <div class="admin-panel-header">
+              <h2>Gestión de Pedidos</h2>
+            </div>
+            <div class="admin-toolbar">
+              <input type="text" id="adminSearchOrd" placeholder="Buscar por # orden..." class="admin-search"/>
+              <select id="adminOrdStatus" class="admin-select">
+                <option value="">Todos los estados</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="confirmado">Confirmado</option>
+                <option value="enviado">Enviado</option>
+                <option value="entregado">Entregado</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table" id="ordersTable">
+                <thead>
+                  <tr><th>Orden</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Pago</th><th>Estado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody id="ordersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- CUSTOMERS -->
+          <div class="admin-panel" id="panel-customers">
+            <div class="admin-panel-header">
+              <h2>Gestión de Clientes</h2>
+            </div>
+            <div class="admin-toolbar">
+              <input type="text" id="adminSearchCust" placeholder="Buscar cliente..." class="admin-search"/>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Avatar</th><th>Nombre</th><th>Email</th><th>Pedidos</th><th>Total</th><th>Estado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody id="customersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- COUPONS -->
+          <div class="admin-panel" id="panel-coupons">
+            <div class="admin-panel-header">
+              <h2>Cupones de Descuento</h2>
+              <button class="btn-admin-add" onclick="openCouponModal()">+ Nuevo Cupón</button>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Código</th><th>Tipo</th><th>Valor</th><th>Usos</th><th>Vigencia</th><th>Estado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody id="couponsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- CATEGORIES -->
+          <div class="admin-panel" id="panel-categories">
+            <div class="admin-panel-header">
+              <h2>Categorías</h2>
+              <button class="btn-admin-add" onclick="openCatModal()">+ Nueva Categoría</button>
+            </div>
+            <div class="cat-admin-grid" id="catAdminGrid"></div>
+          </div>
+
+          <!-- SETTINGS -->
+          <div class="admin-panel" id="panel-settings">
+            <div class="admin-panel-header"><h2>Configuración del Sistema</h2></div>
+            <div class="settings-grid">
+              <div class="settings-card">
+                <h4>Información de la Tienda</h4>
+                <div class="form-field"><label>Nombre de la tienda</label><input type="text" value="LUXE SHOP"/></div>
+                <div class="form-field"><label>Email de contacto</label><input type="email" value="info@luxeshop.com"/></div>
+                <div class="form-field"><label>Teléfono</label><input type="tel" value="+591 700-00000"/></div>
+                <button class="btn-primary">Guardar</button>
+              </div>
+              <div class="settings-card">
+                <h4>Configuración de Envío</h4>
+                <div class="form-field"><label>Envío gratis desde ($)</label><input type="number" value="150"/></div>
+                <div class="form-field"><label>Costo de envío ($)</label><input type="number" value="12.99"/></div>
+                <div class="form-field"><label>Impuesto (%)</label><input type="number" value="13"/></div>
+                <button class="btn-primary">Guardar</button>
+              </div>
+              <div class="settings-card">
+                <h4>Seguridad</h4>
+                <div class="form-field"><label>Contraseña actual</label><input type="password" placeholder="••••••••"/></div>
+                <div class="form-field"><label>Nueva contraseña</label><input type="password" placeholder="••••••••"/></div>
+                <div class="form-field"><label>Confirmar contraseña</label><input type="password" placeholder="••••••••"/></div>
+                <button class="btn-primary">Cambiar Contraseña</button>
+              </div>
+              <div class="settings-card">
+                <h4>Estado del Sistema</h4>
+                <div class="sys-stat"><span>Base de datos</span><span class="stat-ok">✓ Conectada</span></div>
+                <div class="sys-stat"><span>Almacenamiento</span><span class="stat-ok">✓ 2.3 GB libres</span></div>
+                <div class="sys-stat"><span>Modo mantenimiento</span>
+                  <label class="toggle"><input type="checkbox" id="maintenanceToggle"/><span class="slider"></span></label>
+                </div>
+                <div class="sys-stat"><span>Versión</span><span>v2.5.0</span></div>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+  </div><!-- /pages-wrap -->
+
+  <!-- ── CART DRAWER ── -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="drawer-header">
+      <h3>Mi Carrito <span class="drawer-count" id="drawerCount">0 items</span></h3>
+      <button class="drawer-close" id="cartClose">✕</button>
+    </div>
+    <div class="drawer-body" id="drawerBody">
+      <div class="drawer-empty" id="drawerEmpty">
+        <div class="de-icon">🛒</div>
+        <p>Tu carrito está vacío</p>
+        <button class="btn-primary" onclick="closeCart()">Seguir comprando</button>
+      </div>
+      <ul class="drawer-list" id="drawerList"></ul>
+    </div>
+    <!-- Coupon -->
+    <div class="drawer-coupon" id="drawerCoupon">
+      <div class="coupon-row">
+        <input type="text" id="cpInput" placeholder="Código de descuento"/>
+        <button onclick="applyCoupon()">Aplicar</button>
+      </div>
+      <p class="coupon-feedback" id="cpMsg"></p>
+    </div>
+    <!-- Summary -->
+    <div class="drawer-summary" id="drawerSummary">
+      <div class="ds-row"><span>Subtotal</span><span id="dsSubtotal">$0.00</span></div>
+      <div class="ds-row discount hidden" id="dsDiscRow"><span>Descuento</span><span id="dsDiscount" class="green"></span></div>
+      <div class="ds-row"><span>Envío</span><span id="dsShipping">Gratis</span></div>
+      <div class="ds-divider"></div>
+      <div class="ds-row ds-total"><span>Total</span><span id="dsTotal">$0.00</span></div>
+      <button class="btn-checkout" id="checkoutBtn" onclick="openCheckout()">
+        Finalizar Compra →
+      </button>
+      <button class="btn-clear" onclick="clearCart()">Vaciar carrito</button>
+    </div>
+  </aside>
+
+</div><!-- /appScreen -->
+
+<!-- ══ MODALS ══ -->
+
+<!-- Product Modal (admin) -->
+<div class="modal-overlay hidden" id="productModalOv">
+  <div class="modal-box" id="productModal">
+    <div class="modal-hdr">
+      <h3 id="productModalTitle">Nuevo Producto</h3>
+      <button class="modal-x" onclick="closeModal('productModalOv')">✕</button>
+    </div>
+    <form class="modal-form" id="productForm">
+      <input type="hidden" id="pf_id"/>
+      <div class="form-row2">
+        <div class="form-field"><label>Nombre *</label><input type="text" id="pf_nombre" required/></div>
+        <div class="form-field"><label>SKU *</label><input type="text" id="pf_sku" required/></div>
+      </div>
+      <div class="form-row2">
+        <div class="form-field">
+          <label>Categoría *</label>
+          <select id="pf_cat" required>
+            <option value="ropa">Ropa</option>
+            <option value="accesorios">Accesorios</option>
+            <option value="calzado">Calzado</option>
+            <option value="belleza">Belleza</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Badge</label>
+          <select id="pf_badge">
+            <option value="">Ninguno</option>
+            <option value="new">Nuevo</option>
+            <option value="sale">Oferta</option>
+            <option value="hot">Popular</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row2">
+        <div class="form-field"><label>Precio *</label><input type="number" id="pf_precio" step="0.01" min="0" required/></div>
+        <div class="form-field"><label>Precio anterior</label><input type="number" id="pf_precioAnterior" step="0.01" min="0"/></div>
+      </div>
+      <div class="form-row2">
+        <div class="form-field"><label>Stock *</label><input type="number" id="pf_stock" min="0" required/></div>
+        <div class="form-field"><label>Rating (0-5)</label><input type="number" id="pf_rating" step="0.1" min="0" max="5" value="4.5"/></div>
+      </div>
+      <div class="form-field"><label>URL de Imagen</label><input type="url" id="pf_img" placeholder="https://..."/></div>
+      <div class="form-field">
+        <label>Descripción</label>
+        <textarea id="pf_desc" rows="3" placeholder="Descripción del producto..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeModal('productModalOv')">Cancelar</button>
+        <button type="submit" class="btn-primary" id="productFormSubmit">Guardar Producto</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Coupon Modal -->
+<div class="modal-overlay hidden" id="couponModalOv">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3>Nuevo Cupón</h3>
+      <button class="modal-x" onclick="closeModal('couponModalOv')">✕</button>
+    </div>
+    <form class="modal-form" id="couponForm">
+      <div class="form-row2">
+        <div class="form-field"><label>Código *</label><input type="text" id="cf_codigo" style="text-transform:uppercase" required/></div>
+        <div class="form-field">
+          <label>Tipo *</label>
+          <select id="cf_tipo" required>
+            <option value="porcentaje">Porcentaje (%)</option>
+            <option value="fijo">Fijo ($)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row2">
+        <div class="form-field"><label>Valor *</label><input type="number" id="cf_valor" step="0.01" min="0" required/></div>
+        <div class="form-field"><label>Compra mínima ($)</label><input type="number" id="cf_min" step="0.01" min="0" value="0"/></div>
+      </div>
+      <div class="form-row2">
+        <div class="form-field"><label>Usos máximos</label><input type="number" id="cf_usos" min="0" placeholder="Vacío = ilimitado"/></div>
+        <div class="form-field"><label>Fecha de vencimiento</label><input type="date" id="cf_fecha"/></div>
+      </div>
+      <div class="form-field"><label>Descripción</label><input type="text" id="cf_desc" placeholder="Descripción del cupón"/></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeModal('couponModalOv')">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar Cupón</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal-overlay hidden" id="catModalOv">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3>Nueva Categoría</h3>
+      <button class="modal-x" onclick="closeModal('catModalOv')">✕</button>
+    </div>
+    <form class="modal-form" id="catForm">
+      <div class="form-field"><label>Nombre *</label><input type="text" id="catf_nombre" required/></div>
+      <div class="form-field"><label>Descripción</label><input type="text" id="catf_desc"/></div>
+      <div class="form-field"><label>Ícono (emoji)</label><input type="text" id="catf_icon" placeholder="👗" maxlength="4"/></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeModal('catModalOv')">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar Categoría</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div class="modal-overlay hidden" id="orderDetailOv">
+  <div class="modal-box wide">
+    <div class="modal-hdr">
+      <h3 id="orderDetailTitle">Detalle del Pedido</h3>
+      <button class="modal-x" onclick="closeModal('orderDetailOv')">✕</button>
+    </div>
+    <div id="orderDetailContent"></div>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div class="modal-overlay hidden" id="checkoutOv">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3>Finalizar Compra</h3>
+      <button class="modal-x" onclick="closeModal('checkoutOv')">✕</button>
+    </div>
+    <form class="modal-form" id="checkoutForm">
+      <div class="form-row2">
+        <div class="form-field"><label>Nombre</label><input type="text" required placeholder="Juan"/></div>
+        <div class="form-field"><label>Apellido</label><input type="text" required placeholder="Pérez"/></div>
+      </div>
+      <div class="form-field"><label>Dirección</label><input type="text" required placeholder="Av. Principal 123"/></div>
+      <div class="form-row2">
+        <div class="form-field"><label>Ciudad</label><input type="text" required placeholder="Santa Cruz"/></div>
+        <div class="form-field"><label>Código Postal</label><input type="text" placeholder="00000"/></div>
+      </div>
+      <div class="form-field">
+        <label>Método de pago</label>
+        <div class="pay-grid">
+          <label class="pay-card active-pay"><input type="radio" name="pay" value="tarjeta" checked/> 💳 Tarjeta</label>
+          <label class="pay-card"><input type="radio" name="pay" value="paypal"/> 🅿 PayPal</label>
+          <label class="pay-card"><input type="radio" name="pay" value="transferencia"/> 🏦 Transferencia</label>
+        </div>
+      </div>
+      <div class="checkout-total-box">
+        Total a pagar: <strong id="checkoutTotal">$0.00</strong>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeModal('checkoutOv')">Cancelar</button>
+        <button type="submit" class="btn-primary">✓ Confirmar Pedido</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-overlay hidden" id="successOv">
+  <div class="modal-box success-box">
+    <div class="success-anim">✓</div>
+    <h3>¡Pedido Confirmado!</h3>
+    <p>Tu pedido fue procesado exitosamente.</p>
+    <div class="order-num-pill">Orden # <strong id="successOrderNum">000000</strong></div>
+    <button class="btn-primary" onclick="closeModal('successOv');closeCart();showPage('orders')">Ver Mis Pedidos</button>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal-overlay hidden" id="confirmDeleteOv">
+  <div class="modal-box confirm-box">
+    <div class="confirm-icon">⚠</div>
+    <h3>¿Estás seguro?</h3>
+    <p id="confirmDeleteMsg">Esta acción no se puede deshacer.</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('confirmDeleteOv')">Cancelar</button>
+      <button class="btn-danger" id="confirmDeleteBtn">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
