@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Inventario — Panel de control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.3/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">IN</div>
+      <div>
+        <div class="brand-name">Inventario</div>
+        <div class="brand-sub">Panel de control</div>
+      </div>
+    </div>
+
+    <nav class="nav-list">
+      <button class="nav-item active" data-view="dashboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" data-view="productos">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>
+        Productos
+      </button>
+      <button class="nav-item" data-view="movimientos">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        Movimientos
+      </button>
+      <button class="nav-item" data-view="categorias">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+        Categorías
+      </button>
+      <button class="nav-item" data-view="proveedores">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg>
+        Proveedores
+      </button>
+      <button class="nav-item" data-view="exportar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      Conectado a MySQL<br>
+      <span id="db-status" class="mono">verificando…</span>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main>
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="view active" id="view-dashboard">
+      <div class="topbar">
+        <div>
+          <h1>Dashboard</h1>
+          <p>Resumen general del inventario en tiempo real</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn" onclick="location.href='/api/export/excel'">Exportar Excel</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="card">
+          <div class="kpi-label">Productos activos</div>
+          <div class="kpi-value mono" id="kpi-total-productos">—</div>
+        </div>
+        <div class="card">
+          <div class="kpi-label">Valor de inventario</div>
+          <div class="kpi-value mono" id="kpi-valor">—</div>
+        </div>
+        <div class="card">
+          <div class="kpi-label">Bajo stock mínimo</div>
+          <div class="kpi-value mono warn" id="kpi-bajo-stock">—</div>
+        </div>
+        <div class="card">
+          <div class="kpi-label">Categorías</div>
+          <div class="kpi-value mono" id="kpi-categorias">—</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Entradas y salidas <span class="muted">últimos 7 días</span></div>
+          <canvas id="chart-movimientos" height="160"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">Valor por categoría</div>
+          <canvas id="chart-categorias" height="160"></canvas>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Productos con bajo stock <span class="muted" id="bajo-stock-count"></span></div>
+          <div id="lista-bajo-stock"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Últimos movimientos</div>
+          <div id="lista-movimientos"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- PRODUCTOS ---------- -->
+    <section class="view" id="view-productos">
+      <div class="topbar">
+        <div>
+          <h1>Productos</h1>
+          <p>Gestiona el catálogo y el stock de tu inventario</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" id="btn-nuevo-producto">+ Nuevo producto</button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <input class="input" id="filtro-busqueda" placeholder="Buscar por nombre o código…" style="min-width:220px" />
+        <select class="input" id="filtro-categoria"><option value="">Todas las categorías</option></select>
+        <label class="btn btn-sm" style="cursor:pointer">
+          <input type="checkbox" id="filtro-bajo-stock" style="margin-right:6px" /> Solo bajo stock
+        </label>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th><th>Producto</th><th>Categoría</th>
+              <th class="num">Stock</th><th>Nivel</th>
+              <th class="num">Precio compra</th><th class="num">Precio venta</th>
+              <th>Estado</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tabla-productos"></tbody>
+        </table>
+        <div class="empty-state" id="productos-empty" style="display:none">No se encontraron productos.</div>
+      </div>
+    </section>
+
+    <!-- ---------- MOVIMIENTOS ---------- -->
+    <section class="view" id="view-movimientos">
+      <div class="topbar">
+        <div>
+          <h1>Movimientos</h1>
+          <p>Historial de entradas, salidas y ajustes de stock</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" id="btn-nuevo-movimiento">+ Registrar movimiento</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th class="num">Cantidad</th><th class="num">Stock resultante</th><th>Motivo</th></tr>
+          </thead>
+          <tbody id="tabla-movimientos"></tbody>
+        </table>
+        <div class="empty-state" id="movimientos-empty" style="display:none">Aún no hay movimientos registrados.</div>
+      </div>
+    </section>
+
+    <!-- ---------- CATEGORIAS ---------- -->
+    <section class="view" id="view-categorias">
+      <div class="topbar">
+        <div>
+          <h1>Categorías</h1>
+          <p>Organiza tus productos por categoría</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" id="btn-nueva-categoria">+ Nueva categoría</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nombre</th><th>Descripción</th><th class="num">Productos</th><th></th></tr></thead>
+          <tbody id="tabla-categorias"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- PROVEEDORES ---------- -->
+    <section class="view" id="view-proveedores">
+      <div class="topbar">
+        <div>
+          <h1>Proveedores</h1>
+          <p>Directorio de proveedores registrados</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" id="btn-nuevo-proveedor">+ Nuevo proveedor</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th></th></tr></thead>
+          <tbody id="tabla-proveedores"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- EXPORTAR ---------- -->
+    <section class="view" id="view-exportar">
+      <div class="topbar">
+        <div>
+          <h1>Exportar datos</h1>
+          <p>Lleva tu inventario a Excel o consúmelo desde Power BI</p>
+        </div>
+      </div>
+
+      <div class="export-grid">
+        <div class="export-card">
+          <div class="export-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <h3>Excel (.xlsx)</h3>
+          <p>Descarga un libro con dos hojas: inventario valorizado y últimos 500 movimientos, listo para abrir en Excel.</p>
+          <button class="btn btn-primary" onclick="location.href='/api/export/excel'">Descargar Excel</button>
+        </div>
+
+        <div class="export-card">
+          <div class="export-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+          </div>
+          <h3>Power BI</h3>
+          <p>Dos formas de traer estos datos a Power BI:</p>
+          <ol class="steps">
+            <li>Descarga el CSV y en Power BI usa <strong>Obtener datos → Texto/CSV</strong>.</li>
+            <li>O conecta en vivo: <strong>Obtener datos → Base de datos MySQL</strong> → apunta a la vista <span class="mono">vista_inventario_valorizado</span>.</li>
+          </ol>
+          <button class="btn" onclick="location.href='/api/export/csv'">Descargar CSV para Power BI</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= MODALES ================= -->
+<div class="modal-overlay" id="modal-producto">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-producto-titulo">Nuevo producto</h3>
+      <button class="close-btn" data-close="modal-producto">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="p-id">
+      <div class="field-row">
+        <div class="field"><label>Código</label><input class="input" id="p-codigo" placeholder="ELE-003"></div>
+        <div class="field"><label>Unidad de medida</label><input class="input" id="p-unidad" placeholder="unidad"></div>
+      </div>
+      <div class="field"><label>Nombre</label><input class="input" id="p-nombre" placeholder="Nombre del producto"></div>
+      <div class="field"><label>Descripción</label><input class="input" id="p-descripcion" placeholder="Opcional"></div>
+      <div class="field-row">
+        <div class="field"><label>Categoría</label><select class="input" id="p-categoria"></select></div>
+        <div class="field"><label>Proveedor</label><select class="input" id="p-proveedor"></select></div>
+      </div>
+      <div class="field-row">
+        <div class="field" id="p-stock-inicial-wrap"><label>Stock inicial</label><input class="input" id="p-stock-actual" type="number" min="0" value="0"></div>
+        <div class="field"><label>Stock mínimo</label><input class="input" id="p-stock-minimo" type="number" min="0" value="0"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Precio de compra</label><input class="input" id="p-precio-compra" type="number" min="0" step="0.01" value="0"></div>
+        <div class="field"><label>Precio de venta</label><input class="input" id="p-precio-venta" type="number" min="0" step="0.01" value="0"></div>
+      </div>
+      <div class="field"><label>Ubicación</label><input class="input" id="p-ubicacion" placeholder="Estante A1"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-close="modal-producto">Cancelar</button>
+      <button class="btn btn-primary" id="btn-guardar-producto">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-movimiento">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Registrar movimiento</h3>
+      <button class="close-btn" data-close="modal-movimiento">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Producto</label><select class="input" id="m-producto"></select></div>
+      <div class="field-row">
+        <div class="field">
+          <label>Tipo</label>
+          <select class="input" id="m-tipo">
+            <option value="entrada">Entrada</option>
+            <option value="salida">Salida</option>
+            <option value="ajuste">Ajuste (fijar stock)</option>
+          </select>
+        </div>
+        <div class="field"><label>Cantidad</label><input class="input" id="m-cantidad" type="number" min="0.01" step="0.01"></div>
+      </div>
+      <div class="field"><label>Motivo</label><input class="input" id="m-motivo" placeholder="Opcional"></div>
+      <div class="field"><label>Responsable</label><input class="input" id="m-responsable" placeholder="Tu nombre"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-close="modal-movimiento">Cancelar</button>
+      <button class="btn btn-primary" id="btn-guardar-movimiento">Registrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-categoria">
+  <div class="modal">
+    <div class="modal-header"><h3>Nueva categoría</h3><button class="close-btn" data-close="modal-categoria">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Nombre</label><input class="input" id="c-nombre"></div>
+      <div class="field"><label>Descripción</label><input class="input" id="c-descripcion"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-close="modal-categoria">Cancelar</button>
+      <button class="btn btn-primary" id="btn-guardar-categoria">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-proveedor">
+  <div class="modal">
+    <div class="modal-header"><h3>Nuevo proveedor</h3><button class="close-btn" data-close="modal-proveedor">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Nombre</label><input class="input" id="pr-nombre"></div>
+      <div class="field"><label>Contacto</label><input class="input" id="pr-contacto"></div>
+      <div class="field-row">
+        <div class="field"><label>Teléfono</label><input class="input" id="pr-telefono"></div>
+        <div class="field"><label>Email</label><input class="input" id="pr-email"></div>
+      </div>
+      <div class="field"><label>Dirección</label><input class="input" id="pr-direccion"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-close="modal-proveedor">Cancelar</button>
+      <button class="btn btn-primary" id="btn-guardar-proveedor">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/productos.js"></script>
+<script src="js/movimientos.js"></script>
+<script src="js/categorias.js"></script>
+<script src="js/proveedores.js"></script>
+</body>
+</html>
